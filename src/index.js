@@ -28,7 +28,7 @@ class FoodCompare {
       this.foodItemNumber = evt.currentTarget.value
       console.log(this.foodItemNumber)
       this.getNutritionInfo(this.foodItemNumber).then(info => {
-        console.log(info)
+        this.parseNutrientInfoForLabel(info.foods[0].food.nutrients)
       })
     })
   }
@@ -40,11 +40,10 @@ class FoodCompare {
   }
 
   async fetchSearchResults(url) {
-    const results = await fetch(url)
-      .then(response => response.json())
-      .then(data => data)
+    const response = await fetch(url)
+    const data = await response.json()
 
-    return results
+    return data
   }
 
   getFoodQueryURL({
@@ -72,7 +71,6 @@ class FoodCompare {
       selectElement.appendChild(option)
     })
 
-    UIContainer.appendChild(selectElement)
     return {
       UIContainer,
       selectElement,
@@ -83,14 +81,47 @@ class FoodCompare {
     const url = this.getFoodReportURL(foodNumber)
     const foodInfo = await this.fetchSearchResults(url)
     return foodInfo
-
   }
+
   getFoodReportURL(foodNumber) {
     return BASE_REQUEST_URL + '/V2/reports' +
       '?ndbno=' + foodNumber +
       '&type=b' +
       '&format=json' +
       '&api_key=' + API_KEY
+  }
+
+  parseNutrientInfoForLabel(nutrientInfo) {
+    const measuredNutrients = {
+      'Calories': 'Energy',
+      'Total Fat': "Total lipid (fat)",
+      'Saturated Fat': 'Fatty acids, total saturated',
+      'Fatty acids, total monounsaturated',
+      'Fatty acids, total polyunsaturated',
+      'Cholesterol',
+      'Sodium, Na',
+      'Carbohydrate, by difference',
+      'Fiber, total dietary',
+      'Sugars, total',
+      'Protein',
+      'Vitamin A, IU',
+      'Vitamin C, total ascorbic acid',
+      'Calcium, Ca',
+      'Iron, Fe',
+    }
+    const calories = this.getNutrientMeasures(nutrientInfo.find(type => type.name === 'Energy'))
+    console.log(calories)
+    console.log(nutrientInfo)
+  }
+
+  getNutrientMeasures(nutrient) {
+    return {
+      name: nutrient.name,
+      value: nutrient.value,
+      unit: nutrient.unit,
+      quantity: nutrient.measures[0].qty,
+      label: nutrient.measures[0].label,
+    }
   }
 }
 

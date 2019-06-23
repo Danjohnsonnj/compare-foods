@@ -1,3 +1,6 @@
 html body {
   background: whitesmoke;
 }
+html #FoodSelect select {
+  font-size: 16px;
+}
