@@ -93,28 +93,80 @@ class FoodCompare {
 
   parseNutrientInfoForLabel(nutrientInfo) {
     const measuredNutrients = {
-      'Calories': 'Energy',
-      'Total Fat': "Total lipid (fat)",
-      'Saturated Fat': 'Fatty acids, total saturated',
-      'Fatty acids, total monounsaturated',
-      'Fatty acids, total polyunsaturated',
-      'Cholesterol',
-      'Sodium, Na',
-      'Carbohydrate, by difference',
-      'Fiber, total dietary',
-      'Sugars, total',
-      'Protein',
-      'Vitamin A, IU',
-      'Vitamin C, total ascorbic acid',
-      'Calcium, Ca',
-      'Iron, Fe',
+      'Energy': {
+        label: 'Calories',
+        info: {},
+      },
+      'Total lipid (fat)': {
+        label: 'Total Fat',
+        info: {},
+      },
+      'Fatty acids, total saturated': {
+        label: 'Saturated Fat',
+        info: {},
+      },
+      'Fatty acids, total trans': {
+        label: 'Trans Fat',
+        info: {},
+      },
+      'Cholesterol': {
+        label: 'Cholesterol',
+        info: {},
+      },
+      'Sodium, Na': {
+        label: 'Sodium',
+        info: {},
+      },
+      'Carbohydrate, by difference': {
+        label: 'Total Carbohydrate',
+        info: {},
+      },
+      'Fiber, total dietary': {
+        label: 'Dietary Fiber',
+        info: {},
+      },
+      'Sugars, total': {
+        label: 'Sugars',
+        info: {},
+      },
+      'Protein': {
+        label: 'Protein',
+        info: {},
+      },
+      'Vitamin A, IU': {
+        label: 'Vitamin A',
+        info: {},
+      },
+      'Vitamin C, total ascorbic acid': {
+        label: 'Vitamin C',
+        info: {},
+      },
+      'Calcium, Ca': {
+        label: 'Calcium',
+        info: {},
+      },
+      'Iron, Fe': {
+        label: 'Iron',
+        info: {},
+      },
     }
-    const calories = this.getNutrientMeasures(nutrientInfo.find(type => type.name === 'Energy'))
-    console.log(calories)
-    console.log(nutrientInfo)
+
+    Object.keys(measuredNutrients).forEach(nutrient => {
+      measuredNutrients[nutrient].info = this.getNutrientMeasures(nutrientInfo.find(type => type.name === nutrient))
+    })
+    console.log(measuredNutrients)
   }
 
   getNutrientMeasures(nutrient) {
+    if (!nutrient) {
+      return {
+        name: nutrient,
+        value: 0,
+        unit: 'g',
+        quantity: null,
+        label: null,
+      }
+    }
     return {
       name: nutrient.name,
       value: nutrient.value,
