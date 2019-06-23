@@ -8,6 +8,12 @@ const DEFAULT_OPTIONS = Object.freeze({
   startAtIndex: 0,
 })
 
+// Todo: make this configurable
+const UIContainer = document.getElementById('FoodSelect')
+const inputElement = document.getElementById('Query')
+const selectElement = UIContainer.querySelector('select')
+const defaultSelectHTML = '<option value="default" selected>Choose a food...</option>'
+
 class FoodCompare {
   constructor(options) {
     const { responseFormat, sortType, maxResults, startAtIndex, } = Object.assign({}, DEFAULT_OPTIONS, options)
@@ -15,6 +21,16 @@ class FoodCompare {
     this.sortType = sortType
     this.maxResults = maxResults
     this.startAtIndex = startAtIndex
+
+    let inputTypingTimeout = null
+    inputElement.addEventListener('keyup', () => {
+      if (inputTypingTimeout) {
+        clearTimeout(inputTypingTimeout)
+      }
+      inputTypingTimeout = setTimeout(() => {
+        this.search(inputElement.value)
+      }, 500)
+    })
   }
 
   async search(searchTerm) {
@@ -23,9 +39,17 @@ class FoodCompare {
     }
 
     const searchResults = await this.getFoodItemsForSearchTerm(searchTerm)
-    const { selectElement, } = this.buildFoodOptionsSelect(searchResults)
+    if (searchResults.errors) {
+      console.log(`Found no results for ${searchTerm}`)
+      return
+    }
+
+    this.buildFoodOptionsSelect(searchResults)
     selectElement.addEventListener('change', async (evt) => {
       this.foodItemNumber = evt.currentTarget.value
+      if (this.foodItemNumber === 'default') {
+        return
+      }
       console.log(this.foodItemNumber)
       this.getNutritionInfo(this.foodItemNumber).then(info => {
         this.parseNutrientInfoForLabel(info.foods[0].food.nutrients)
@@ -61,9 +85,7 @@ class FoodCompare {
   }
 
   buildFoodOptionsSelect(searchResults) {
-    const UIContainer = document.getElementById('FoodSelect')
-    const selectElement = UIContainer.querySelector('select')
-
+    selectElement.innerHTML = defaultSelectHTML
     searchResults.list.item.forEach((food) => {
       const option = document.createElement('option')
       option.innerHTML = food.name
@@ -178,4 +200,3 @@ class FoodCompare {
 }
 
 const foodCompare = new FoodCompare()
-foodCompare.search('peanut butter')
