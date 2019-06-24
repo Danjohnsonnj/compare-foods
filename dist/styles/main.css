@@ -1,6 +1,40 @@
 html body {
   background: whitesmoke;
 }
-html #FoodSelect select {
+html #FoodSelect {
   font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+}
+html #FoodSelect > * {
+  font-size: inherit;
+  padding: 0.5em;
+  max-width: 50ch;
+  margin-bottom: 1em;
+}
+html #FoodSelect input::placeholder {
+  color: #bbb;
+}
+html #FoodSelect input,
+html #FoodSelect select {
+  display: block;
+  line-height: 1.3;
+  box-sizing: border-box;
+  margin: 0;
+  border: 1px solid #aaa;
+  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+  border-radius: 0.5em;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+html #FoodSelect input:not(:last-child),
+html #FoodSelect select:not(:last-child) {
+  margin-bottom: 1em;
+}
+html #FoodSelect input:focus,
+html #FoodSelect select:focus {
+  outline: none;
+  box-shadow: 0 0 2px 2px #555;
 }

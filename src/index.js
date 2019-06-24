@@ -12,7 +12,7 @@ const DEFAULT_OPTIONS = Object.freeze({
 const UIContainer = document.getElementById('FoodSelect')
 const inputElement = document.getElementById('Query')
 const selectElement = UIContainer.querySelector('select')
-const defaultSelectHTML = '<option value="default" selected>Choose a food...</option>'
+const defaultSelectHTML = '<option value="default" selected>Choose a food from the results</option>'
 
 class FoodCompare {
   constructor(options) {
@@ -34,14 +34,15 @@ class FoodCompare {
   }
 
   async search(searchTerm) {
+    selectElement.disabled = true
+
     if (!searchTerm) {
       throw new Error('Missing searchTerm in query.')
     }
 
     const searchResults = await this.getFoodItemsForSearchTerm(searchTerm)
     if (searchResults.errors) {
-      console.log(`Found no results for ${searchTerm}`)
-      return
+      throw new Error(`Found no results for ${searchTerm}`)
     }
 
     this.buildFoodOptionsSelect(searchResults)
@@ -85,6 +86,7 @@ class FoodCompare {
   }
 
   buildFoodOptionsSelect(searchResults) {
+    selectElement.disabled = false
     selectElement.innerHTML = defaultSelectHTML
     searchResults.list.item.forEach((food) => {
       const option = document.createElement('option')
