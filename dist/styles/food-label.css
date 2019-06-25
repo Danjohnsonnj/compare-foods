@@ -35,6 +35,9 @@ DEALINGS IN THE SOFTWARE.
   max-width: 400px;
   padding: 0.5rem;
 }
+.performance-facts b {
+  font-weight: 600;
+}
 .performance-facts table {
   border-collapse: collapse;
 }

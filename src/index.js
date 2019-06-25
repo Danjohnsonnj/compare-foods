@@ -1,3 +1,5 @@
+import { label, } from './food-label-template'
+
 const API_KEY = 'KJcLpsEHn1PkRBnZLa5825iT94JQOhaSSwEa2xry'
 const BASE_REQUEST_URL = 'https://api.nal.usda.gov/ndb/'
 // 'https://api.nal.usda.gov/ndb/V2/reports?'
@@ -12,6 +14,7 @@ const DEFAULT_OPTIONS = Object.freeze({
 const UIContainer = document.getElementById('FoodSelect')
 const inputElement = document.getElementById('Query')
 const selectElement = UIContainer.querySelector('select')
+const labelWrapper = document.getElementById('LabelWrapper')
 const defaultSelectHTML = '<option value="default" selected>Choose a food from the results</option>'
 
 class FoodCompare {
@@ -51,10 +54,16 @@ class FoodCompare {
       if (this.foodItemNumber === 'default') {
         return
       }
-      console.log(this.foodItemNumber)
-      this.getNutritionInfo(this.foodItemNumber).then(info => {
-        this.parseNutrientInfoForLabel(info.foods[0].food.nutrients)
-      })
+
+      const nutrientInfo = await this.getNutritionInfo(this.foodItemNumber)
+      const parsedInfo = this.parseNutrientInfoForLabel(nutrientInfo.foods[0].food.nutrients)
+
+      const labelContext = Object.values(parsedInfo).reduce((acc, nut) => {
+        acc[nut.label] = nut.info
+        return acc
+      }, {})
+
+      labelWrapper.innerHTML = label(labelContext)
     })
   }
 
@@ -178,7 +187,7 @@ class FoodCompare {
     Object.keys(measuredNutrients).forEach(nutrient => {
       measuredNutrients[nutrient].info = this.getNutrientMeasures(nutrientInfo.find(type => type.name === nutrient))
     })
-    console.log(measuredNutrients)
+    return measuredNutrients
   }
 
   getNutrientMeasures(nutrient) {
