@@ -1,6 +1,22 @@
+// Per https://www.fda.gov/food/nutrition-education-resources-materials/how-understand-and-use-nutrition-facts-label
+// and https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp
+const caloriesPerFatGram = 9
+const dailyValue = {
+  totalFat: 65,
+  saturatedFat: 20,
+  cholesterol: 300,
+  sodium: 2400,
+  totalCarbohydrate: 300,
+  dietaryFiber: 25,
+  vitaminA: 5000,
+  vitaminC: 90,
+  calcium: 1300,
+  iron: 18,
+}
+
 /*
-Modified from the CodePen by the inimitable Chris Coyier,
-https://chriscoyier.net/, licensed below.
+The label markup is modified from the CodePen by the inimitable
+Chris Coyier, https://chriscoyier.net/, as licensed below.
 
 Copyright (c) Chris Coyier - https://codepen.io/chriscoyier/full/egHEK
 
@@ -29,7 +45,7 @@ const label = function(context) {
   return `<section class="performance-facts">
       <header class="performance-facts__header">
         <h1 class="performance-facts__title">Nutrition Facts</h1>
-        <p>Serving Size ${context.Calories.quantity}${context.Calories.label}
+        <p>Serving Size ${context.Calories.quantity} ${context.Calories.label}
         </p>
       </header>
       <table class="performance-facts__table">
@@ -48,7 +64,7 @@ const label = function(context) {
             </th>
             <td>
               Calories from Fat
-              ###
+              ${Math.ceil(context['Total Fat'].value * caloriesPerFatGram)}
             </td>
           </tr>
           <tr class="thick-row">
@@ -62,7 +78,7 @@ const label = function(context) {
               ${context['Total Fat'].value}${context['Total Fat'].unit}
             </th>
             <td>
-              <b>##%</b>
+              <b>${Math.ceil(context['Total Fat'].value / dailyValue.totalFat * 100)}%</b>
             </td>
           </tr>
           <tr>
@@ -73,7 +89,7 @@ const label = function(context) {
               ${context['Saturated Fat'].value}${context['Saturated Fat'].unit}
             </th>
             <td>
-              <b>##%</b>
+              <b>${Math.ceil(context['Saturated Fat'].value / dailyValue.saturatedFat * 100)}%</b>
             </td>
           </tr>
           <tr>
@@ -81,7 +97,7 @@ const label = function(context) {
             </td>
             <th>
               Trans Fat
-              ${context['Trans Fat'].value}${context['Trans Fat'].unit}
+              ${context.Sugars.value}${context.Sugars.unit}
             </th>
             <td>
             </td>
@@ -92,7 +108,7 @@ const label = function(context) {
               ${context.Cholesterol.value}${context.Cholesterol.unit}
             </th>
             <td>
-              <b>##%</b>
+            <b>${Math.ceil(context.Cholesterol.value / dailyValue.cholesterol * 100)}%</b>
             </td>
           </tr>
           <tr>
@@ -101,7 +117,7 @@ const label = function(context) {
               ${context.Sodium.value}${context.Sodium.unit}
             </th>
             <td>
-              <b>##%</b>
+            <b>${Math.ceil(context.Sodium.value / dailyValue.sodium * 100)}%</b>
             </td>
           </tr>
           <tr>
@@ -110,7 +126,7 @@ const label = function(context) {
               ${context['Total Carbohydrate'].value}${context['Total Carbohydrate'].unit}
             </th>
             <td>
-              <b>##%</b>
+            <b>${Math.ceil(context['Total Carbohydrate'].value / dailyValue.totalCarbohydrate * 100)}%</b>
             </td>
           </tr>
           <tr>
@@ -121,7 +137,7 @@ const label = function(context) {
               ${context['Dietary Fiber'].value}${context['Dietary Fiber'].unit}
             </th>
             <td>
-              <b>##%</b>
+            <b>${Math.ceil(context['Dietary Fiber'].value / dailyValue.dietaryFiber * 100)}%</b>
             </td>
           </tr>
           <tr>
@@ -129,7 +145,7 @@ const label = function(context) {
             </td>
             <th>
               Sugars
-              ${context.Sugars.value}${context['Trans Fat'].unit}
+              ${context.Sugars.value}${context.Sugars.unit}
             </th>
             <td>
             </td>
@@ -149,21 +165,21 @@ const label = function(context) {
           <tr>
             <td colspan="2">
               Vitamin A
-              ${context['Vitamin A'].value}${context['Vitamin A'].unit}
+              ${Math.ceil(context['Vitamin A'].value / dailyValue.vitaminA * 100)}%
             </td>
             <td>
               Vitamin C
-              ${context['Vitamin C'].value}${context['Vitamin C'].unit}
+              ${Math.ceil(context['Vitamin C'].value / dailyValue.vitaminC * 100)}%
             </td>
           </tr>
           <tr class="thin-end">
             <td colspan="2">
               Calcium
-              ${context.Calcium.value}${context.Calcium.unit}
+              ${Math.ceil(context.Calcium.value / dailyValue.calcium * 100)}%
             </td>
             <td>
               Iron
-              ${context.Iron.value}${context.Iron.unit}
+              ${Math.ceil(context.Iron.value / dailyValue.iron * 100)}%
             </td>
           </tr>
         </tbody>

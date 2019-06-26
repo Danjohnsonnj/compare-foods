@@ -15,7 +15,7 @@ const UIContainer = document.getElementById('FoodSelect')
 const inputElement = document.getElementById('Query')
 const selectElement = UIContainer.querySelector('select')
 const labelWrapper = document.getElementById('LabelWrapper')
-const defaultSelectHTML = '<option value="default" selected>Choose a food from the results</option>'
+const defaultSelectHTML = '<option value="default" selected>Waiting for your search</option>'
 
 class FoodCompare {
   constructor(options) {
@@ -24,6 +24,8 @@ class FoodCompare {
     this.sortType = sortType
     this.maxResults = maxResults
     this.startAtIndex = startAtIndex
+
+    selectElement.innerHTML = defaultSelectHTML
 
     let inputTypingTimeout = null
     inputElement.addEventListener('keyup', () => {
@@ -43,8 +45,10 @@ class FoodCompare {
       throw new Error('Missing searchTerm in query.')
     }
 
+    selectElement.innerHTML = '<option value="default">Loading...</option>'
     const searchResults = await this.getFoodItemsForSearchTerm(searchTerm)
     if (searchResults.errors) {
+      selectElement.innerHTML = defaultSelectHTML
       throw new Error(`Found no results for ${searchTerm}`)
     }
 
@@ -95,15 +99,12 @@ class FoodCompare {
   }
 
   buildFoodOptionsSelect(searchResults) {
+    const options = searchResults.list.item.reduce((acc, food) => {
+      acc += `<option value='${food.ndbno}'>${food.name}</option>`
+      return acc
+    }, '<option value="default" selected>Choose a food from the results</option>')
+    selectElement.innerHTML = options
     selectElement.disabled = false
-    selectElement.innerHTML = defaultSelectHTML
-    searchResults.list.item.forEach((food) => {
-      const option = document.createElement('option')
-      option.innerHTML = food.name
-      option.value = food.ndbno
-      selectElement.appendChild(option)
-    })
-
     return {
       UIContainer,
       selectElement,
